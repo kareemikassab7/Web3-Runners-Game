@@ -2,6 +2,8 @@ const path = require('path');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
+
 
 module.exports = {
   mode: "development",
@@ -36,6 +38,17 @@ module.exports = {
       {
         test: /\.(gif|png|jpe?g|svg|xml)$/i,
         use: "file-loader"
+      },{
+        test: /\.(m4a)$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[name].[ext]',
+              outputPath: 'assets/audio',
+            },
+          },
+        ]
       }
     ]
   },
@@ -46,13 +59,20 @@ module.exports = {
       verbose: true,
     }),
     new webpack.DefinePlugin({
-      CANVAS_RENDERER: JSON.stringify(true),
-      WEBGL_RENDERER: JSON.stringify(true),
+      'CANVAS_RENDERER': JSON.stringify(true),
+      'WEBGL_RENDERER': JSON.stringify(true),
     }),
     new HtmlWebpackPlugin({
       template: "./index.html",
       filename: "index.html",
       inject: "body",
+    }),    new CopyPlugin({
+      patterns: [
+        {
+          from: path.resolve(__dirname, '../assets'),
+          to: path.resolve(__dirname, 'build')
+        }
+      ],
     }),
   ],
 };

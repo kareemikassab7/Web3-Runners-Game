@@ -1,31 +1,33 @@
 import Phaser from "phaser";
-import logoImg from "./assets/logo.png";
 import React from "react";
 import ReactDOM from "react-dom";
 import App from "./components/App.jsx";
+import playGame from "./Phaser/scene.js";
+import PlayScene from './Phaser/PlayScene.js';
+import PreloadScene from './Phaser/PreloadScene.js';
+
+//https://stackoverflow.com/questions/71668256/deprecation-notice-reactdom-render-is-no-longer-supported-in-react-18
+//console.log(App);
+
 const config = {
   type: Phaser.AUTO,
-  parent: "phaser-example",
-  width: 800,
-  height: 600,
-  scene: {
-    preload: preload,
-    create: create
-  }
+  width: 1000,
+  height: 340,
+  pixelArt: true,
+  transparent: true,
+  physics: {
+    default: 'arcade',
+    arcade: {
+      debug: false
+    }
+  },
+  scene: [PreloadScene, PlayScene]
 };
-const game = new Phaser.Game(config);
-function preload() {
-  this.load.image("logo", logoImg);
-}
-function create() {
-  const logo = this.add.image(400, 150, "logo");
-this.tweens.add({
-    targets: logo,
-    y: 450,
-    duration: 2000,
-    ease: "Power2",
-    yoyo: true,
-    loop: -1
-  });
-}
-ReactDOM.render(<App />, document.getElementById("root"));
+
+new Phaser.Game(config);
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(
+  <App />,
+  document.getElementById("root") || document.createElement("div")
+);
